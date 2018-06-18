@@ -17,6 +17,10 @@ user_database = []
 passwds = []
 handles = {}
 
+#
+# Reminder, replace handles[key] with session in 1.2 FINAL, remove update exception here.
+#
+
 def connect():
     count = 0
     increment = 0
@@ -29,20 +33,21 @@ def connect():
 #attempts to login to each handle/server, odd retry thing I came up with.        
     for key in handles:
         increment += 1
+        session = handles[key]
         try:
-            handles[key].__enter__()
+            session.__enter__()
         except:
-            handles[key].__enter__()
+            session.__enter__()
         else:
             pass
 #confirms connectivity to server, or else removes handle 
-        if handles[key]._validate_connection() == False:
+        if session._validate_connection() == False:
             try:
-                handles[key].__enter__()
+                session.__enter__()
             except:
-                print("Connection to server #%d Failed.." % (increment))
+                print("Connection to server #%d %s Failed.." % (increment,session.ip))
                 print("")
-                print("Deleting entry for server #%d and continuing.." % (increment))
+                print("Deleting entry for server #%d %s and continuing.." % (increment,session.ip))
                 del handles[increment - 1]
                 del ucs_hosts[increment - 1]
                 del user_database[increment - 1]
@@ -51,8 +56,8 @@ def connect():
             else:
                 pass
        
-        if handles[key]._validate_connection() == True:
-            print("Connection to UCS Server #%d in list, successful.." % (increment))
+        if session._validate_connection() == True:
+            print("Connection to UCS Server #%d %s in list, successful.." % (increment,session.ip))
         
     file_server = input("Enter file server IP or localhost: ")
     server_login = input("Does file server need login? [y/n]: ").lower()
@@ -82,23 +87,25 @@ def connect():
             tick += 1
             session = handles[key]
             print("")
-            print("Sending update request to server #%d.." % (tick))
-
+            print("Sending update request to server #%d %s.." % (tick,session.ip))
+             
             p = Process(target=firmware_huu_update, args=(session,directory,protocol,file_server,user,password,up_all,stop,timeout,no,no))
             p.start()
             p.join()
-
+            
             monitor = multiprocessing.Pool(None)
             monitor.apply_async(firmware_huu_update_monitor, args=(session,time,interval))
                      
         else:
-            print("Connection failed to server #%d in list, continuing.." % (tick))
+            print("Connection failed to server #%d %s in list, continuing.." % (tick,session.ip))
     monitor.close()
-    monitor.join()    
+    monitor.join()
 
     for key in handles:
-        handles[key]._logout()
-        print("Server #%d Updated.." % (int(key) + 1))
+        session = handles[key]
+        session._logout()
+        print("Server #%d %s Updated.." % (int(key) + 1,session.ip))
+    return True
 
 def main():
     end_program = 'exit'
@@ -119,7 +126,7 @@ def main():
         user_database.append(username)
         passwds.append(password)
         print ("Servers Added to update list:  " + str(len(ucs_hosts)))
-        add_hosts = input('Add UCS Servers to update list? [y/n]: ').lower()
+        add_hosts = input('Add UCS Servers to update list? Or "show" to see UCS Server list [y/n]: ').lower()
 
         if add_hosts == 'n':
             print("Initiating connection(s) to UCS Server(s) in list..")
