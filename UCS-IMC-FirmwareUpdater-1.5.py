@@ -16,10 +16,6 @@ user_database = []
 passwds = []
 handles = {}
 
-#
-# Reminder, replace handles[key] with session in 1.2 FINAL, remove update exception here.
-#
-
 def connect():
     count = 0
     increment = 0
@@ -125,7 +121,7 @@ def main():
         user_database.append(username)
         passwds.append(password)
         print ("Servers Added to update list:  " + str(len(ucs_hosts)))
-        add_hosts = input('Add UCS Servers to update list? Or "show" to see UCS Server list [y/n]: ').lower()
+        add_hosts = input('Add UCS Servers to update list? [y/n]: ').lower()
 
         if add_hosts == 'n':
             print("Initiating connection(s) to UCS Server(s) in list..")
