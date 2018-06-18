@@ -8,7 +8,6 @@ import time
 import datetime
 import imcsdk.imchandle
 import getpass
-import time
 import sys
 import os
 
