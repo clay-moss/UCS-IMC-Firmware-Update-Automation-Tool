@@ -134,7 +134,7 @@ def main():
 
 if __name__ == '__main__':
     print("")
-    print("Cisco UCS Server Firmware Update Automation Tool - Made by clmoss@cisco.com")
+    print("Cisco UCS Server Firmware Update Automation Tool - Made by Clayton M. Moss (clmoss@cisco.com) 2018")
     print("")
     multiprocessing.freeze_support()
     main()
