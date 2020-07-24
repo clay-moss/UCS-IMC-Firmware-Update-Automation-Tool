@@ -1,9 +1,7 @@
 
 DOCUMENTATION:
 
-Enter 'exit' at "username","UCS IP", or "password" prompt to exit program, or just use the red X button.
-
-There is NO error checking at the prompts.
+Enter 'exit' at "username","UCS IP", or "password" prompt to exit program
 
 File path should be formatted, for example as, '/folder/huu.iso'.
 
